@@ -1,17 +1,11 @@
-#include <FB_Const.h>
-#include <FB_Error.h>
-#include <FB_Network.h>
-#include <FB_Utils.h>
-#include <Firebase.h>
-#include <FirebaseFS.h>
+#include <WiFi.h>
 #include <Firebase_ESP_Client.h>
-
-#include<WiFi.h>
 #include <SparkFunTSL2561.h>
 #include <Wire.h>
 #include "DHT.h"
 #include "secrets.h"
 #include "addons/TokenHelper.h"
+#include "time.h"
 
 #define LCDDISPLAY
 
@@ -35,6 +29,10 @@ FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
+const char* ntpServer = "0.asia.pool.ntp.org";
+const long  gmtOffset_sec = 19800;
+const int   daylightOffset_sec = 0;
+
 unsigned char ID;
 boolean gain;
 unsigned int ms;
@@ -57,7 +55,7 @@ void setup()
   }
   initDHTsensor();
   initRelay(RELAYPIN);
-
+  initTime();
   initFirebase();
 
 #ifdef LCDDISPLAY
@@ -65,6 +63,9 @@ void setup()
   lcd_i2c.init();
   lcd_i2c.backlight();
 #endif
+
+  Serial.println(epochTime());
+
 }
 
 void loop()
@@ -85,6 +86,12 @@ void loop()
   sendKeyvaluepairtoLCD(lux,tempr,humdty,moist);
 #endif
 
+  firestoreUpdate(tempr,humdty,lux,moist);
+
+#ifndef LCDDISPLAY
+  delay(1000);
+#endif  
+
   if(moist<1500)
   {
     relayDriver(0,1000);
@@ -93,6 +100,8 @@ void loop()
   {
     relayDriver(1,10);
   }
+
+  delay(5000);
 
 }
 
