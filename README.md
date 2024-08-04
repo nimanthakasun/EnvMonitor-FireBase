@@ -17,3 +17,5 @@ Contains NTP time syncing related functions to support timestamp generation. Sin
 In this project I have used TSL2561 light sensor and this file contains lux level calculation functions by utilizing the TSL2561 sensor
 ### secrets.h
 Contains your network details (WiFi Credentials) and Firebase Credentials. Kindly update your unique details before compiling and executing the code
+
+Social Preview from: <a href="https://www.freepik.com/free-photo/representation-user-experience-interface-design_94963722.htm#fromView=search&page=1&position=24&uuid=86274ee9-ece7-4923-b97f-6fe2e67f29de">Image by freepik</a>
